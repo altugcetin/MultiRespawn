@@ -1,0 +1,23 @@
+name: MultiRespawn
+version: 1.0.0
+main: net.astroalchemist.multirespawn.MultiRespawn
+api-version: "1.21"
+folia-supported: true
+author: AstroAlchemist
+description: Cross-server respawn plugin for Folia - Transfer players to another server on death
+website: https://github.com/altugcetin/MultiRespawn
+
+commands:
+  multirespawn:
+    description: Main command for MultiRespawn plugin
+    aliases: [mr, respawnserver]
+    usage: /<command> [reload|info]
+    permission: multirespawn.admin
+
+permissions:
+  multirespawn.admin:
+    description: Access to admin commands
+    default: op
+  multirespawn.bypass:
+    description: Bypass cross-server respawn
+    default: false

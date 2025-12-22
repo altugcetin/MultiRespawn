@@ -1,0 +1,69 @@
+# ╔═══════════════════════════════════════════════════════════════════════════╗
+# ║                         MultiRespawn Configuration                        ║
+# ║                        Developer: AstroAlchemist                          ║
+# ╚═══════════════════════════════════════════════════════════════════════════╝
+
+# Plugin Settings
+settings:
+  # Enable or disable the plugin
+  enabled: true
+  
+  # Debug mode - prints additional information to console
+  debug: false
+  
+  # Delay before teleporting to another server (in ticks, 20 ticks = 1 second)
+  # This gives the player time to see the death screen
+  teleport-delay: 60
+  
+  # Should the respawn screen be shown before teleporting?
+  # If false, player will be teleported immediately after death
+  show-respawn-screen: true
+
+# Server Transfer Settings
+transfer:
+  # Target server name (must match the server name in your proxy config)
+  # This is where players will be sent when they die
+  target-server: "lobby"
+  
+  # Use modern transfer packet (1.20.5+) instead of BungeeCord plugin messaging
+  # Set to true if you're using Velocity or modern BungeeCord
+  use-modern-transfer: false
+  
+  # Fallback behavior if transfer fails
+  fallback:
+    # Should we use default respawn behavior if transfer fails?
+    use-default-respawn: true
+
+# World-specific Settings
+# You can configure different target servers for different worlds
+worlds:
+  # Default target server for all worlds not listed below
+  default: "lobby"
+  
+  # World-specific overrides (world name -> target server)
+  overrides:
+    world: "lobby"
+    world_nether: "lobby"
+    world_the_end: "lobby"
+
+# Conditions - When should players be transferred?
+conditions:
+  # Only transfer on PvP deaths
+  only-pvp-deaths: false
+  
+  # Only transfer if player has a specific permission
+  require-permission: false
+  permission-node: "multirespawn.transfer"
+  
+  # Worlds where cross-server respawn is enabled
+  # Leave empty to enable in all worlds
+  enabled-worlds: []
+  
+  # Worlds where cross-server respawn is disabled
+  # Takes priority over enabled-worlds
+  disabled-worlds: []
+
+# Action Bar Settings
+actionbar:
+  # Show action bar countdown before transfer
+  enabled: true
