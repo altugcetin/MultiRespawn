@@ -125,33 +125,35 @@ public class RespawnManager {
 
         UUID uuid = player.getUniqueId();
         ConfigManager config = plugin.getConfigManager();
-        String command = config.getRespawnCommand();
+        String playerName = player.getName();
 
         // Mark player as teleporting (for freeze + damage protection)
         teleportingPlayers.add(uuid);
         pendingRespawns.remove(uuid);
 
-        if (config.isRunAsConsole()) {
-            // Run command as console using Global Region Scheduler (Folia thread-safe)
-            String consoleCommand = config.getConsoleCommand().replace("%player%", player.getName());
-            Bukkit.getGlobalRegionScheduler().run(plugin, task -> {
+        // All commands must run via GlobalRegionScheduler for Folia thread safety
+        Bukkit.getGlobalRegionScheduler().run(plugin, task -> {
+            if (config.isRunAsConsole()) {
+                // Run command as console
+                String consoleCommand = config.getConsoleCommand().replace("%player%", playerName);
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), consoleCommand);
-            });
-            plugin.debug("Executed console command via GlobalRegionScheduler: " + consoleCommand);
-        } else {
-            // Run command as player (must be on player's thread)
-            player.performCommand(command);
-            plugin.debug("Player " + player.getName() + " executed command: /" + command);
-        }
+                plugin.debug("Executed console command: " + consoleCommand);
+            } else {
+                // Run command as console but formatted for player (fallback)
+                String command = config.getRespawnCommand() + " " + playerName;
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+                plugin.debug("Executed command as console fallback: " + command);
+            }
+        });
 
         // Schedule removal of teleporting status after spawn teleport duration
         int teleportDuration = config.getSpawnTeleportDuration();
-        player.getScheduler().runDelayed(plugin, task -> {
+        Bukkit.getGlobalRegionScheduler().runDelayed(plugin, task -> {
             teleportingPlayers.remove(uuid);
-            plugin.debug("Removed teleporting status for " + player.getName());
-        }, null, teleportDuration);
+            plugin.debug("Removed teleporting status for " + playerName);
+        }, teleportDuration);
 
-        plugin.debug("Player " + player.getName() + " will be protected for " + (teleportDuration / 20) + " seconds");
+        plugin.debug("Player " + playerName + " will be protected for " + (teleportDuration / 20) + " seconds");
     }
 
     public boolean hasPendingRespawn(UUID uuid) {
