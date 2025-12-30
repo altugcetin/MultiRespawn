@@ -11,13 +11,13 @@ Transfer players to another server (e.g., lobby) when they die.
 ## Features
 
 - **Folia Support** - Fully compatible with Folia's RegionScheduler API
-- **BungeeCord/Velocity Support** - Works with both proxy systems
-- **Modern Transfer (1.20.5+)** - New transfer packet support
-- **World-based Configuration** - Different target servers for different worlds
-- **PvP/PvE Filter** - Option to transfer only on PvP deaths
-- **Permission System** - Bypass and transfer permissions
-- **Action Bar Countdown** - Visual countdown before transfer
-- **Fully Configurable** - All messages and settings are customizable
+- **Instant Spawn on Death** - Skip respawn screen, /back returns to death location
+- **Console Command Execution** - Bypasses cooldowns and restrictions
+- **Movement Freeze** - Players frozen during teleportation
+- **PvP/PvE Filter** - Option to run only on PvP deaths
+- **Permission System** - Bypass and permission controls
+- **Configurable Messages** - Enable/disable all messages
+- **World Filter** - Enable/disable for specific worlds
 
 ## Installation
 
@@ -32,25 +32,38 @@ Transfer players to another server (e.g., lobby) when they die.
 ### config.yml
 
 ```yaml
-# Target server settings
-transfer:
-  target-server: "lobby"  # Server to transfer to on death
-  use-modern-transfer: false  # 1.20.5+ modern transfer
+# Plugin Settings
+settings:
+  enabled: true
+  debug: false
+  respawn-delay: 60              # Only used if skip-respawn-screen is false
+  skip-respawn-screen: true      # Skip respawn screen for instant spawn
+  spawn-teleport-duration: 100   # Freeze duration after spawn command
 
-# World-specific settings
-worlds:
-  default: "lobby"
-  overrides:
-    world: "lobby"
-    world_nether: "lobby"
-    world_the_end: "lobby"
+# Respawn Command Settings
+respawn:
+  command: "spawn"
+  run-as-console: true           # Bypasses cooldowns
+  console-command: "spawn %player%"
+
+# Message Settings
+messages:
+  show-death-message: false
+  show-actionbar: false
+  show-bypass-message: false
 
 # Conditions
 conditions:
-  only-pvp-deaths: false      # Only transfer on PvP deaths
-  require-permission: false   # Permission requirement
-  enabled-worlds: []          # Enabled worlds (empty = all)
-  disabled-worlds: []         # Disabled worlds
+  only-pvp-deaths: false
+  require-permission: false
+  permission-node: "multirespawn.use"
+  enabled-worlds: []
+  disabled-worlds: []
+
+# Movement Freeze Settings
+freeze:
+  enabled: true
+  freeze-rotation: false
 ```
 
 ### messages.yml
