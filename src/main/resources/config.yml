@@ -34,8 +34,8 @@ respawn:
   run-as-console: true
   
   # Console command format (use %player% for player name)
-  # Example: "spawn %player%" or "warp spawn %player%"
-  console-command: "spawn %player%"
+  # Example: "huskhomes:spawn %player%" or "spawn %player%"
+  console-command: "huskhomes:spawn %player%"
 
 # Message Settings
 messages:

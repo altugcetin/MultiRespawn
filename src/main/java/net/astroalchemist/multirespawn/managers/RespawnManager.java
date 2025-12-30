@@ -132,12 +132,14 @@ public class RespawnManager {
         pendingRespawns.remove(uuid);
 
         if (config.isRunAsConsole()) {
-            // Run command as console with player placeholder
+            // Run command as console using Global Region Scheduler (Folia thread-safe)
             String consoleCommand = config.getConsoleCommand().replace("%player%", player.getName());
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), consoleCommand);
-            plugin.debug("Executed console command: " + consoleCommand);
+            Bukkit.getGlobalRegionScheduler().run(plugin, task -> {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), consoleCommand);
+            });
+            plugin.debug("Executed console command via GlobalRegionScheduler: " + consoleCommand);
         } else {
-            // Run command as player
+            // Run command as player (must be on player's thread)
             player.performCommand(command);
             plugin.debug("Player " + player.getName() + " executed command: /" + command);
         }
