@@ -2,6 +2,7 @@ package net.astroalchemist.multirespawn.managers;
 
 import net.astroalchemist.multirespawn.MultiRespawn;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -78,7 +79,33 @@ public class MessageManager {
         if (message == null || message.isEmpty()) {
             return Component.empty();
         }
-        return LegacyComponentSerializer.legacyAmpersand().deserialize(message);
+        // First convert legacy & codes to MiniMessage format
+        String converted = LegacyComponentSerializer.legacyAmpersand().serialize(
+                LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+        // Then parse with MiniMessage for hex color support
+        return MiniMessage.miniMessage().deserialize(message
+                .replace("&0", "<black>")
+                .replace("&1", "<dark_blue>")
+                .replace("&2", "<dark_green>")
+                .replace("&3", "<dark_aqua>")
+                .replace("&4", "<dark_red>")
+                .replace("&5", "<dark_purple>")
+                .replace("&6", "<gold>")
+                .replace("&7", "<gray>")
+                .replace("&8", "<dark_gray>")
+                .replace("&9", "<blue>")
+                .replace("&a", "<green>")
+                .replace("&b", "<aqua>")
+                .replace("&c", "<red>")
+                .replace("&d", "<light_purple>")
+                .replace("&e", "<yellow>")
+                .replace("&f", "<white>")
+                .replace("&l", "<bold>")
+                .replace("&o", "<italic>")
+                .replace("&n", "<underlined>")
+                .replace("&m", "<strikethrough>")
+                .replace("&k", "<obfuscated>")
+                .replace("&r", "<reset>"));
     }
 
     public Component get(String path) {
@@ -89,20 +116,12 @@ public class MessageManager {
         return colorize(getPrefix() + getRaw(path, replacements));
     }
 
-    public Component getTransferDeathMessage(String serverName) {
-        return get("transfer.death-message", "{server}", serverName);
-    }
-
-    public Component getTransferSuccess() {
-        return get("transfer.success");
-    }
-
-    public Component getTransferFailed() {
-        return get("transfer.failed");
+    public Component getRespawnMessage() {
+        return get("respawn.death-message");
     }
 
     public Component getActionBar(int seconds) {
-        return colorize(getRaw("transfer.actionbar", "{seconds}", String.valueOf(seconds)));
+        return colorize(getRaw("respawn.actionbar", "{seconds}", String.valueOf(seconds)));
     }
 
     public Component getBypassMessage() {

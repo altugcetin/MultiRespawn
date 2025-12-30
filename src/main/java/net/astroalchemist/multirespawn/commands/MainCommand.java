@@ -4,6 +4,7 @@ import net.astroalchemist.multirespawn.MultiRespawn;
 import net.astroalchemist.multirespawn.managers.ConfigManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -23,6 +24,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
     private final MultiRespawn plugin;
     private final List<String> subcommands = Arrays.asList("reload", "info", "help");
+    private static final TextColor MAIN_COLOR = TextColor.fromHexString("#00fb9a");
 
     public MainCommand(MultiRespawn plugin) {
         this.plugin = plugin;
@@ -60,19 +62,19 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
     private void sendHelp(CommandSender sender) {
         sender.sendMessage(Component.empty());
-        sender.sendMessage(Component.text("═══════════════════════════════════", NamedTextColor.GOLD));
-        sender.sendMessage(Component.text("       MultiRespawn ", NamedTextColor.GOLD, TextDecoration.BOLD)
-                .append(Component.text("v" + plugin.getPluginMeta().getVersion(), NamedTextColor.YELLOW)));
-        sender.sendMessage(Component.text("       Developer: ", NamedTextColor.GRAY)
-                .append(Component.text("AstroAlchemist", NamedTextColor.AQUA)));
-        sender.sendMessage(Component.text("═══════════════════════════════════", NamedTextColor.GOLD));
+        sender.sendMessage(Component.text("═══════════════════════════════════", MAIN_COLOR));
+        sender.sendMessage(Component.text("       MultiRespawn ", MAIN_COLOR, TextDecoration.BOLD)
+                .append(Component.text("v" + plugin.getPluginMeta().getVersion(), NamedTextColor.WHITE)));
+        sender.sendMessage(Component.text("       Geliştirici: ", NamedTextColor.GRAY)
+                .append(Component.text("AstroAlchemist", MAIN_COLOR)));
+        sender.sendMessage(Component.text("═══════════════════════════════════", MAIN_COLOR));
         sender.sendMessage(Component.empty());
-        sender.sendMessage(Component.text(" /multirespawn reload ", NamedTextColor.YELLOW)
-                .append(Component.text("- Reload configuration", NamedTextColor.GRAY)));
-        sender.sendMessage(Component.text(" /multirespawn info ", NamedTextColor.YELLOW)
-                .append(Component.text("- Show plugin information", NamedTextColor.GRAY)));
-        sender.sendMessage(Component.text(" /multirespawn help ", NamedTextColor.YELLOW)
-                .append(Component.text("- Show this help menu", NamedTextColor.GRAY)));
+        sender.sendMessage(Component.text(" /multirespawn reload ", MAIN_COLOR)
+                .append(Component.text("- Konfigürasyonu yeniden yükle", NamedTextColor.GRAY)));
+        sender.sendMessage(Component.text(" /multirespawn info ", MAIN_COLOR)
+                .append(Component.text("- Plugin bilgilerini göster", NamedTextColor.GRAY)));
+        sender.sendMessage(Component.text(" /multirespawn help ", MAIN_COLOR)
+                .append(Component.text("- Bu yardım menüsünü göster", NamedTextColor.GRAY)));
         sender.sendMessage(Component.empty());
     }
 
@@ -81,31 +83,27 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         var messages = plugin.getMessageManager();
 
         sender.sendMessage(Component.empty());
-        sender.sendMessage(Component.text("═══════════════════════════════════", NamedTextColor.GOLD));
-        sender.sendMessage(Component.text("       MultiRespawn ", NamedTextColor.GOLD, TextDecoration.BOLD)
-                .append(Component.text("Info", NamedTextColor.YELLOW)));
-        sender.sendMessage(Component.text("═══════════════════════════════════", NamedTextColor.GOLD));
+        sender.sendMessage(Component.text("═══════════════════════════════════", MAIN_COLOR));
+        sender.sendMessage(Component.text("       MultiRespawn ", MAIN_COLOR, TextDecoration.BOLD)
+                .append(Component.text("Bilgi", NamedTextColor.WHITE)));
+        sender.sendMessage(Component.text("═══════════════════════════════════", MAIN_COLOR));
         sender.sendMessage(Component.empty());
 
         String status = config.isEnabled() ? messages.getStatusEnabled() : messages.getStatusDisabled();
-        sender.sendMessage(Component.text(" Status: ", NamedTextColor.GRAY).append(messages.colorize(status)));
+        sender.sendMessage(Component.text(" Durum: ", NamedTextColor.GRAY).append(messages.colorize(status)));
 
-        sender.sendMessage(Component.text(" Target Server: ", NamedTextColor.GRAY)
-                .append(Component.text(config.getDefaultTargetServer(), NamedTextColor.AQUA)));
+        sender.sendMessage(Component.text(" Respawn Komutu: ", NamedTextColor.GRAY)
+                .append(Component.text("/" + config.getRespawnCommand(), MAIN_COLOR)));
 
-        int delaySec = config.getTeleportDelay() / 20;
-        sender.sendMessage(Component.text(" Transfer Delay: ", NamedTextColor.GRAY)
-                .append(Component.text(delaySec + messages.getSecondsUnit(), NamedTextColor.YELLOW)));
-
-        String mode = config.isUseModernTransfer() ? "Modern (1.20.5+)" : "BungeeCord";
-        sender.sendMessage(Component.text(" Transfer Mode: ", NamedTextColor.GRAY)
-                .append(Component.text(mode, NamedTextColor.YELLOW)));
+        int delaySec = config.getRespawnDelay() / 20;
+        sender.sendMessage(Component.text(" Respawn Gecikmesi: ", NamedTextColor.GRAY)
+                .append(Component.text(delaySec + messages.getSecondsUnit(), NamedTextColor.WHITE)));
 
         String pvpOnly = config.isOnlyPvpDeaths() ? messages.getYes() : messages.getNo();
-        sender.sendMessage(Component.text(" PvP Only: ", NamedTextColor.GRAY).append(messages.colorize(pvpOnly)));
+        sender.sendMessage(Component.text(" Sadece PvP: ", NamedTextColor.GRAY).append(messages.colorize(pvpOnly)));
 
         String debug = config.isDebugEnabled() ? messages.getYes() : messages.getNo();
-        sender.sendMessage(Component.text(" Debug Mode: ", NamedTextColor.GRAY).append(messages.colorize(debug)));
+        sender.sendMessage(Component.text(" Debug Modu: ", NamedTextColor.GRAY).append(messages.colorize(debug)));
 
         sender.sendMessage(Component.empty());
     }

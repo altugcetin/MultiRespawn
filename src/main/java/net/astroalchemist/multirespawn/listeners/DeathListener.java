@@ -50,14 +50,16 @@ public class DeathListener implements Listener {
         }
 
         if (player.hasPermission("multirespawn.bypass")) {
-            player.sendMessage(plugin.getMessageManager().getBypassMessage());
+            if (config.isShowBypassMessage()) {
+                player.sendMessage(plugin.getMessageManager().getBypassMessage());
+            }
             plugin.debug("Player " + player.getName() + " has bypass permission");
             return;
         }
 
         String worldName = player.getWorld().getName();
         if (!config.isWorldEnabled(worldName)) {
-            plugin.debug("World " + worldName + " is not enabled for cross-server respawn");
+            plugin.debug("World " + worldName + " is not enabled for respawn command");
             return;
         }
 
@@ -75,10 +77,25 @@ public class DeathListener implements Listener {
             }
         }
 
-        String targetServer = config.getTargetServer(worldName);
-        plugin.debug("Player " + player.getName() + " died in " + worldName + ", will transfer to " + targetServer);
+        plugin.debug("Player " + player.getName() + " died in " + worldName + ", scheduling respawn command");
 
-        plugin.getTransferManager().scheduleTransfer(player, targetServer);
+        // If skip-respawn-screen is enabled, execute command immediately after a short
+        // delay
+        // This prevents the respawn screen from appearing
+        if (config.isSkipRespawnScreen()) {
+            // Keep inventory to prevent items dropping (respawn will happen instantly)
+            event.setKeepInventory(true);
+            event.getDrops().clear();
+            event.setKeepLevel(true);
+            event.setDroppedExp(0);
+
+            // Execute spawn command immediately (with small delay for safety)
+            plugin.getRespawnManager().executeInstantRespawn(player);
+        } else {
+            // Normal respawn flow - wait for respawn screen
+            plugin.getRespawnManager().scheduleRespawn(player);
+        }
+
         lastPvpDamage.remove(player.getUniqueId());
     }
 }

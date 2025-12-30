@@ -3,73 +3,65 @@
 # ║                     Developer: AstroAlchemist                             ║
 # ╚═══════════════════════════════════════════════════════════════════════════╝
 #
-# Color codes: Use & for legacy colors (e.g., &a, &b, &c)
+# Color codes: Use & for legacy colors or <#HEXCODE> for hex colors
 # Placeholders:
 #   {player} - Player name
-#   {server} - Target server name
 #   {seconds} - Countdown seconds
 #   {world} - World name
 #
 
 # Prefix for all messages
-prefix: "&8[&6MultiRespawn&8] &r"
+prefix: "&8[<#00fb9a>MultiRespawn&8] &r"
 
-# Death & Transfer Messages
-transfer:
-  # Message shown when player dies and will be transferred
-  death-message: "&aYou died! &eTransferring to {server}&a..."
-  
-  # Message shown when transfer is successful
-  success: "&aSuccessfully transferred to lobby!"
+# Respawn Messages
+respawn:
+  # Message shown when player dies
+  death-message: "<#00fb9a>Öldün! Spawn noktasına ışınlanıyorsun..."
   
   # Action bar countdown message
-  actionbar: "&e&lTransfer: &f{seconds} seconds..."
-  
-  # Message shown when transfer fails
-  failed: "&cServer transfer failed. Respawning at default spawn point."
+  actionbar: "<#00fb9a>&lIşınlanma: &f{seconds} saniye..."
 
 # Bypass Messages
 bypass:
   # Message shown to players with bypass permission
-  message: "&7Cross-server respawn bypassed (you have bypass permission)."
+  message: "&7Respawn komutu atlandı (bypass izniniz var)."
 
 # Command Messages
 commands:
   # Reload success message
-  reload-success: "&aConfiguration reloaded successfully!"
+  reload-success: "<#00fb9a>Konfigürasyon başarıyla yeniden yüklendi!"
   
   # No permission message
-  no-permission: "&cYou don't have permission to use this command!"
+  no-permission: "&cBu komutu kullanmak için izniniz yok!"
   
   # Unknown command/subcommand
-  unknown-command: "&cUnknown command. Use &e/multirespawn help &cfor help."
+  unknown-command: "&cBilinmeyen komut. <#00fb9a>/multirespawn help &cyardım için."
   
   # Plugin info header
-  info-header: "&6═══════════════════════════════════"
+  info-header: "<#00fb9a>═══════════════════════════════════"
   
   # Help messages
   help:
-    header: "&6═══════════════════════════════════"
-    title: "&6&lMultiRespawn &eHelp"
-    reload: "&e/multirespawn reload &7- Reload configuration"
-    info: "&e/multirespawn info &7- Show plugin information"
-    help: "&e/multirespawn help &7- Show this help menu"
+    header: "<#00fb9a>═══════════════════════════════════"
+    title: "<#00fb9a>&lMultiRespawn &fYardım"
+    reload: "<#00fb9a>/multirespawn reload &7- Konfigürasyonu yeniden yükle"
+    info: "<#00fb9a>/multirespawn info &7- Plugin bilgilerini göster"
+    help: "<#00fb9a>/multirespawn help &7- Bu yardım menüsünü göster"
 
 # Status Messages (for /multirespawn info)
 status:
-  enabled: "&a✔ Enabled"
-  disabled: "&c✖ Disabled"
-  yes: "&aYes"
-  no: "&cNo"
+  enabled: "<#00fb9a>✔ Aktif"
+  disabled: "&c✖ Devre Dışı"
+  yes: "<#00fb9a>Evet"
+  no: "&cHayır"
   
   # Info display labels
   labels:
-    status: "&7Status: "
-    target-server: "&7Target Server: "
-    transfer-delay: "&7Transfer Delay: "
-    transfer-mode: "&7Transfer Mode: "
-    pvp-only: "&7PvP Only: "
-    debug-mode: "&7Debug Mode: "
+    status: "&7Durum: "
+    respawn-command: "&7Respawn Komutu: "
+    respawn-delay: "&7Respawn Gecikmesi: "
+    pvp-only: "&7Sadece PvP: "
+    debug-mode: "&7Debug Modu: "
   
   # Units
-  seconds: " seconds"
+  seconds: " saniye"

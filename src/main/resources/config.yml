@@ -11,59 +11,70 @@ settings:
   # Debug mode - prints additional information to console
   debug: false
   
-  # Delay before teleporting to another server (in ticks, 20 ticks = 1 second)
-  # This gives the player time to see the death screen
-  teleport-delay: 60
+  # Delay before running spawn command (in ticks, 20 ticks = 1 second)
+  # Only used if skip-respawn-screen is false
+  respawn-delay: 60
   
-  # Should the respawn screen be shown before teleporting?
-  # If false, player will be teleported immediately after death
-  show-respawn-screen: true
+  # Skip respawn screen and instant spawn on death
+  # When true: player dies -> instant /spawn (no respawn screen, /back returns to death location)
+  # When false: player dies -> respawn screen -> spawn -> /spawn command
+  skip-respawn-screen: true
+  
+  # How long the spawn teleportation takes (in ticks)
+  # Player will be frozen and protected during this time AFTER the command runs
+  spawn-teleport-duration: 100
 
-# Server Transfer Settings
-transfer:
-  # Target server name (must match the server name in your proxy config)
-  # This is where players will be sent when they die
-  target-server: "lobby"
+# Respawn Command Settings
+respawn:
+  # Command to run when player respawns (without the /)
+  command: "spawn"
   
-  # Use modern transfer packet (1.20.5+) instead of BungeeCord plugin messaging
-  # Set to true if you're using Velocity or modern BungeeCord
-  use-modern-transfer: false
+  # Run command as console instead of player
+  # Recommended: true (bypasses cooldowns and restrictions)
+  run-as-console: true
   
-  # Fallback behavior if transfer fails
-  fallback:
-    # Should we use default respawn behavior if transfer fails?
-    use-default-respawn: true
+  # Console command format (use %player% for player name)
+  # Example: "spawn %player%" or "warp spawn %player%"
+  console-command: "spawn %player%"
 
-# World-specific Settings
-# You can configure different target servers for different worlds
-worlds:
-  # Default target server for all worlds not listed below
-  default: "lobby"
+# Message Settings
+messages:
+  # Show death message ("Işınlanıyorsun...")
+  show-death-message: false
   
-  # World-specific overrides (world name -> target server)
-  overrides:
-    world: "lobby"
-    world_nether: "lobby"
-    world_the_end: "lobby"
+  # Show action bar countdown
+  show-actionbar: false
+  
+  # Show bypass message to players with bypass permission
+  show-bypass-message: false
 
-# Conditions - When should players be transferred?
+# Conditions - When should the respawn command run?
 conditions:
-  # Only transfer on PvP deaths
+  # Only run on PvP deaths
   only-pvp-deaths: false
   
-  # Only transfer if player has a specific permission
+  # Only run if player has a specific permission
   require-permission: false
-  permission-node: "multirespawn.transfer"
+  permission-node: "multirespawn.use"
   
-  # Worlds where cross-server respawn is enabled
+  # Worlds where this is enabled
   # Leave empty to enable in all worlds
   enabled-worlds: []
   
-  # Worlds where cross-server respawn is disabled
+  # Worlds where this is disabled
   # Takes priority over enabled-worlds
   disabled-worlds: []
 
-# Action Bar Settings
-actionbar:
-  # Show action bar countdown before transfer
+
+# Movement Freeze Settings
+# Prevents players from moving during respawn countdown
+freeze:
+  # Enable movement freeze during respawn countdown
   enabled: true
+  
+  # Also freeze player rotation (looking around)
+  freeze-rotation: false
+  
+  # Message shown when player tries to move during freeze
+  # Leave empty to disable
+  freeze-message: "&c&lIşınlanma sırasında hareket edemezsiniz!"

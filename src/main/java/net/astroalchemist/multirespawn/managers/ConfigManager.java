@@ -3,11 +3,8 @@ package net.astroalchemist.multirespawn.managers;
 import net.astroalchemist.multirespawn.MultiRespawn;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Manages plugin configuration
@@ -20,22 +17,31 @@ public class ConfigManager {
 
     private boolean enabled;
     private boolean debugEnabled;
-    private int teleportDelay;
-    private boolean showRespawnScreen;
+    private int respawnDelay;
+    private int spawnTeleportDuration;
+    private boolean skipRespawnScreen;
 
-    private String defaultTargetServer;
-    private boolean useModernTransfer;
-    private boolean useFallbackRespawn;
+    // Respawn command settings
+    private String respawnCommand;
+    private boolean runAsConsole;
+    private String consoleCommand;
 
-    private final Map<String, String> worldOverrides = new HashMap<>();
+    // Message settings
+    private boolean showDeathMessage;
+    private boolean showActionbar;
+    private boolean showBypassMessage;
 
+    // Conditions
     private boolean onlyPvpDeaths;
     private boolean requirePermission;
     private String permissionNode;
     private List<String> enabledWorlds;
     private List<String> disabledWorlds;
 
-    private boolean actionBarEnabled;
+    // Freeze settings
+    private boolean freezeEnabled;
+    private boolean freezeRotation;
+    private String freezeMessage;
 
     public ConfigManager(MultiRespawn plugin) {
         this.plugin = plugin;
@@ -47,39 +53,32 @@ public class ConfigManager {
 
         enabled = plugin.getConfig().getBoolean("settings.enabled", true);
         debugEnabled = plugin.getConfig().getBoolean("settings.debug", false);
-        teleportDelay = plugin.getConfig().getInt("settings.teleport-delay", 60);
-        showRespawnScreen = plugin.getConfig().getBoolean("settings.show-respawn-screen", true);
+        respawnDelay = plugin.getConfig().getInt("settings.respawn-delay", 60);
+        spawnTeleportDuration = plugin.getConfig().getInt("settings.spawn-teleport-duration", 100);
+        skipRespawnScreen = plugin.getConfig().getBoolean("settings.skip-respawn-screen", true);
 
-        defaultTargetServer = plugin.getConfig().getString("transfer.target-server", "lobby");
-        useModernTransfer = plugin.getConfig().getBoolean("transfer.use-modern-transfer", false);
-        useFallbackRespawn = plugin.getConfig().getBoolean("transfer.fallback.use-default-respawn", true);
+        // Respawn command settings
+        respawnCommand = plugin.getConfig().getString("respawn.command", "spawn");
+        runAsConsole = plugin.getConfig().getBoolean("respawn.run-as-console", true);
+        consoleCommand = plugin.getConfig().getString("respawn.console-command", "spawn %player%");
 
-        worldOverrides.clear();
-        String defaultWorld = plugin.getConfig().getString("worlds.default", "lobby");
-        worldOverrides.put("default", defaultWorld);
+        // Message settings
+        showDeathMessage = plugin.getConfig().getBoolean("messages.show-death-message", false);
+        showActionbar = plugin.getConfig().getBoolean("messages.show-actionbar", false);
+        showBypassMessage = plugin.getConfig().getBoolean("messages.show-bypass-message", false);
 
-        ConfigurationSection overrides = plugin.getConfig().getConfigurationSection("worlds.overrides");
-        if (overrides != null) {
-            for (String world : overrides.getKeys(false)) {
-                worldOverrides.put(world.toLowerCase(), overrides.getString(world));
-            }
-        }
-
+        // Conditions
         onlyPvpDeaths = plugin.getConfig().getBoolean("conditions.only-pvp-deaths", false);
         requirePermission = plugin.getConfig().getBoolean("conditions.require-permission", false);
-        permissionNode = plugin.getConfig().getString("conditions.permission-node", "multirespawn.transfer");
+        permissionNode = plugin.getConfig().getString("conditions.permission-node", "multirespawn.use");
         enabledWorlds = plugin.getConfig().getStringList("conditions.enabled-worlds");
         disabledWorlds = plugin.getConfig().getStringList("conditions.disabled-worlds");
 
-        actionBarEnabled = plugin.getConfig().getBoolean("actionbar.enabled", true);
-    }
-
-    public String getTargetServer(String worldName) {
-        String server = worldOverrides.get(worldName.toLowerCase());
-        if (server != null) {
-            return server;
-        }
-        return worldOverrides.getOrDefault("default", defaultTargetServer);
+        // Freeze settings
+        freezeEnabled = plugin.getConfig().getBoolean("freeze.enabled", true);
+        freezeRotation = plugin.getConfig().getBoolean("freeze.freeze-rotation", false);
+        freezeMessage = plugin.getConfig().getString("freeze.freeze-message",
+                "&c&lIşınlanma sırasında hareket edemezsiniz!");
     }
 
     public boolean isWorldEnabled(String worldName) {
@@ -97,8 +96,8 @@ public class ConfigManager {
             return true;
         }
 
-        for (String enabled : enabledWorlds) {
-            if (enabled.equalsIgnoreCase(lowerWorld)) {
+        for (String world : enabledWorlds) {
+            if (world.equalsIgnoreCase(lowerWorld)) {
                 return true;
             }
         }
@@ -113,6 +112,7 @@ public class ConfigManager {
         return LegacyComponentSerializer.legacyAmpersand().deserialize(message);
     }
 
+    // Getters
     public boolean isEnabled() {
         return enabled;
     }
@@ -121,24 +121,20 @@ public class ConfigManager {
         return debugEnabled;
     }
 
-    public int getTeleportDelay() {
-        return teleportDelay;
+    public int getRespawnDelay() {
+        return respawnDelay;
     }
 
-    public boolean isShowRespawnScreen() {
-        return showRespawnScreen;
+    public int getSpawnTeleportDuration() {
+        return spawnTeleportDuration;
     }
 
-    public String getDefaultTargetServer() {
-        return defaultTargetServer;
+    public String getRespawnCommand() {
+        return respawnCommand;
     }
 
-    public boolean isUseModernTransfer() {
-        return useModernTransfer;
-    }
-
-    public boolean isUseFallbackRespawn() {
-        return useFallbackRespawn;
+    public boolean isRunAsConsole() {
+        return runAsConsole;
     }
 
     public boolean isOnlyPvpDeaths() {
@@ -154,6 +150,34 @@ public class ConfigManager {
     }
 
     public boolean isActionBarEnabled() {
-        return actionBarEnabled;
+        return showActionbar;
+    }
+
+    public boolean isSkipRespawnScreen() {
+        return skipRespawnScreen;
+    }
+
+    public String getConsoleCommand() {
+        return consoleCommand;
+    }
+
+    public boolean isShowDeathMessage() {
+        return showDeathMessage;
+    }
+
+    public boolean isShowBypassMessage() {
+        return showBypassMessage;
+    }
+
+    public boolean isFreezeEnabled() {
+        return freezeEnabled;
+    }
+
+    public boolean isFreezeRotation() {
+        return freezeRotation;
+    }
+
+    public String getFreezeMessage() {
+        return freezeMessage;
     }
 }

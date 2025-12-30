@@ -24,14 +24,14 @@ public class RespawnListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
-        if (plugin.getTransferManager().hasPendingTransfer(player.getUniqueId())) {
-            plugin.debug("Player " + player.getName() + " respawned with pending transfer");
+        if (plugin.getRespawnManager().hasPendingRespawn(player.getUniqueId())) {
+            plugin.debug("Player " + player.getName() + " respawned with pending respawn command");
         }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
-        plugin.getTransferManager().cancelTransfer(event.getPlayer().getUniqueId());
-        plugin.debug("Cancelled pending transfer for " + event.getPlayer().getName() + " (player quit)");
+        plugin.getRespawnManager().cancelRespawn(event.getPlayer().getUniqueId());
+        plugin.debug("Cancelled pending respawn for " + event.getPlayer().getName() + " (player quit)");
     }
 }
