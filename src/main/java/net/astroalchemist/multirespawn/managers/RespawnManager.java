@@ -62,6 +62,7 @@ public class RespawnManager {
     /**
      * Execute instant respawn (skip respawn screen)
      * Used when skip-respawn-screen is enabled
+     * Player dies normally, then spawn command runs immediately
      */
     public void executeInstantRespawn(Player player) {
         UUID uuid = player.getUniqueId();
@@ -81,20 +82,13 @@ public class RespawnManager {
             player.sendMessage(plugin.getMessageManager().getRespawnMessage());
         }
 
-        // Execute command after a very short delay (1 tick) to ensure death is
-        // processed
-        player.getScheduler().runDelayed(plugin, task -> {
-            if (player.isOnline()) {
-                // Respawn the player first (removes death screen)
-                player.spigot().respawn();
+        // Execute spawn command immediately after death
+        // Do NOT call player.spigot().respawn() - let spawn command handle respawn
+        // This ensures /back returns to actual death location
+        executeRespawnCommand(player);
+        scheduledRespawns.remove(uuid);
 
-                // Then execute the spawn command
-                executeRespawnCommand(player);
-            }
-            scheduledRespawns.remove(uuid);
-        }, null, 1L);
-
-        plugin.debug("Instant respawn scheduled for " + player.getName());
+        plugin.debug("Instant spawn command executed for " + player.getName());
     }
 
     private void startActionBarCountdown(Player player, int totalTicks) {

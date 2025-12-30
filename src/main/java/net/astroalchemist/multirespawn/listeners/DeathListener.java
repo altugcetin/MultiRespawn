@@ -79,17 +79,10 @@ public class DeathListener implements Listener {
 
         plugin.debug("Player " + player.getName() + " died in " + worldName + ", scheduling respawn command");
 
-        // If skip-respawn-screen is enabled, execute command immediately after a short
-        // delay
-        // This prevents the respawn screen from appearing
+        // If skip-respawn-screen is enabled, execute spawn command immediately
+        // Player dies normally (items drop), but spawn command runs right away
         if (config.isSkipRespawnScreen()) {
-            // Keep inventory to prevent items dropping (respawn will happen instantly)
-            event.setKeepInventory(true);
-            event.getDrops().clear();
-            event.setKeepLevel(true);
-            event.setDroppedExp(0);
-
-            // Execute spawn command immediately (with small delay for safety)
+            // Execute spawn command immediately
             plugin.getRespawnManager().executeInstantRespawn(player);
         } else {
             // Normal respawn flow - wait for respawn screen
