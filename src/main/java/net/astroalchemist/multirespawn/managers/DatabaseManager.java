@@ -34,6 +34,7 @@ public class DatabaseManager {
             hikariConfig.setPassword(config.getMysqlPassword());
             hikariConfig.setMaximumPoolSize(10);
             hikariConfig.setConnectionTimeout(5000);
+            hikariConfig.setPoolName("MultiRespawn-Pool");
             hikariConfig.addDataSourceProperty("cachePrepStmts", "true");
             hikariConfig.addDataSourceProperty("prepStmtCacheSize", "250");
             hikari = new HikariDataSource(hikariConfig);

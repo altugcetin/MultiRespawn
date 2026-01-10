@@ -27,11 +27,18 @@ public class BackCommand implements CommandExecutor {
             return true;
         }
 
-        DeathLocation loc = plugin.getDatabaseManager().getDeathLocation(player.getUniqueId().toString());
-        if (loc == null) {
-            player.sendMessage("§cNo death location found.");
+        if (plugin.getDatabaseManager() == null) {
+            player.sendMessage("§cDatabase not available.");
             return true;
         }
+
+        DeathLocation loc = plugin.getDatabaseManager().getDeathLocation(player.getUniqueId().toString());
+        if (loc == null) {
+            player.sendMessage(plugin.getMessageManager().getBackNoLocation());
+            return true;
+        }
+
+        player.sendMessage(plugin.getMessageManager().getBackTeleporting());
 
         String cmd = String.format("huskhomes:tp %s %.2f %.2f %.2f %.2f %.2f %s %s",
                 player.getName(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch(), loc.getWorld(),
@@ -41,7 +48,7 @@ public class BackCommand implements CommandExecutor {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
         });
 
-        plugin.debug("Back command executed for " + player.getName() + ": " + cmd);
+        plugin.debug("Back command: " + cmd);
         return true;
     }
 }

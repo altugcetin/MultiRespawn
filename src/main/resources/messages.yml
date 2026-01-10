@@ -65,3 +65,8 @@ status:
   
   # Units
   seconds: " saniye"
+
+# Back Command Messages
+back:
+  no-location: "&cÖlüm noktası bulunamadı."
+  teleporting: "<#00fb9a>Ölüm noktasına ışınlanıyorsun..."

@@ -155,4 +155,12 @@ public class MessageManager {
     public String getSecondsUnit() {
         return getRaw("status.seconds");
     }
+
+    public Component getBackNoLocation() {
+        return get("back.no-location");
+    }
+
+    public Component getBackTeleporting() {
+        return get("back.teleporting");
+    }
 }
