@@ -1,7 +1,9 @@
 package net.astroalchemist.multirespawn.listeners;
 
 import net.astroalchemist.multirespawn.MultiRespawn;
+import net.astroalchemist.multirespawn.data.DeathLocation;
 import net.astroalchemist.multirespawn.managers.ConfigManager;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,13 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * Listens for player death events
- * 
- * @author AstroAlchemist
- */
 public class DeathListener implements Listener {
-
     private final MultiRespawn plugin;
     private final Map<UUID, Long> lastPvpDamage = new HashMap<>();
     private static final long PVP_TIMEOUT = 10000;
@@ -44,48 +40,45 @@ public class DeathListener implements Listener {
         Player player = event.getEntity();
         ConfigManager config = plugin.getConfigManager();
 
-        if (!config.isEnabled()) {
-            plugin.debug("Plugin is disabled, skipping death event for " + player.getName());
+        if (!config.isEnabled())
             return;
-        }
 
         if (player.hasPermission("multirespawn.bypass")) {
             if (config.isShowBypassMessage()) {
                 player.sendMessage(plugin.getMessageManager().getBypassMessage());
             }
-            plugin.debug("Player " + player.getName() + " has bypass permission");
             return;
         }
 
         String worldName = player.getWorld().getName();
-        if (!config.isWorldEnabled(worldName)) {
-            plugin.debug("World " + worldName + " is not enabled for respawn command");
+        if (!config.isWorldEnabled(worldName))
             return;
-        }
 
-        if (config.isRequirePermission() && !player.hasPermission(config.getPermissionNode())) {
-            plugin.debug(
-                    "Player " + player.getName() + " doesn't have required permission: " + config.getPermissionNode());
+        if (config.isRequirePermission() && !player.hasPermission(config.getPermissionNode()))
             return;
-        }
 
         if (config.isOnlyPvpDeaths()) {
             Long lastPvp = lastPvpDamage.get(player.getUniqueId());
-            if (lastPvp == null || System.currentTimeMillis() - lastPvp > PVP_TIMEOUT) {
-                plugin.debug("Player " + player.getName() + " died from non-PvP, skipping (PvP-only mode)");
+            if (lastPvp == null || System.currentTimeMillis() - lastPvp > PVP_TIMEOUT)
                 return;
-            }
         }
 
-        plugin.debug("Player " + player.getName() + " died in " + worldName + ", scheduling respawn command");
+        Location loc = player.getLocation();
+        DeathLocation deathLoc = new DeathLocation(
+                player.getUniqueId().toString(),
+                config.getServerName(),
+                worldName,
+                loc.getX(),
+                loc.getY(),
+                loc.getZ(),
+                loc.getYaw(),
+                loc.getPitch());
+        plugin.getDatabaseManager().saveDeathLocation(deathLoc);
+        plugin.debug("Saved death location for " + player.getName() + " at " + worldName);
 
-        // If skip-respawn-screen is enabled, execute spawn command immediately
-        // Player dies normally (items drop), but spawn command runs right away
         if (config.isSkipRespawnScreen()) {
-            // Execute spawn command immediately
             plugin.getRespawnManager().executeInstantRespawn(player);
         } else {
-            // Normal respawn flow - wait for respawn screen
             plugin.getRespawnManager().scheduleRespawn(player);
         }
 

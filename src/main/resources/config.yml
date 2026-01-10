@@ -1,80 +1,46 @@
-# ╔═══════════════════════════════════════════════════════════════════════════╗
-# ║                         MultiRespawn Configuration                        ║
-# ║                        Developer: AstroAlchemist                          ║
-# ╚═══════════════════════════════════════════════════════════════════════════╝
+# MultiRespawn Configuration
 
-# Plugin Settings
 settings:
-  # Enable or disable the plugin
   enabled: true
-  
-  # Debug mode - prints additional information to console
   debug: false
-  
-  # Delay before running spawn command (in ticks, 20 ticks = 1 second)
-  # Only used if skip-respawn-screen is false
+  server-name: "lobby"
   respawn-delay: 60
-  
-  # Skip respawn screen and instant spawn on death
-  # When true: player dies -> instant /spawn (no respawn screen, /back returns to death location)
-  # When false: player dies -> respawn screen -> spawn -> /spawn command
   skip-respawn-screen: true
-  
-  # How long the spawn teleportation takes (in ticks)
-  # Player will be frozen and protected during this time AFTER the command runs
   spawn-teleport-duration: 100
 
-# Respawn Command Settings
 respawn:
-  # Command to run when player respawns (without the /)
   command: "spawn"
-  
-  # Run command as console instead of player
-  # Recommended: true (bypasses cooldowns and restrictions)
   run-as-console: true
-  
-  # Console command format (use %player% for player name)
-  # Example: "huskhomes:spawn %player%" or "spawn %player%"
   console-command: "huskhomes:spawn %player%"
 
-# Message Settings
 messages:
-  # Show death message ("Işınlanıyorsun...")
   show-death-message: false
-  
-  # Show action bar countdown
   show-actionbar: false
-  
-  # Show bypass message to players with bypass permission
   show-bypass-message: false
 
-# Conditions - When should the respawn command run?
 conditions:
-  # Only run on PvP deaths
   only-pvp-deaths: false
-  
-  # Only run if player has a specific permission
   require-permission: false
   permission-node: "multirespawn.use"
-  
-  # Worlds where this is enabled
-  # Leave empty to enable in all worlds
   enabled-worlds: []
-  
-  # Worlds where this is disabled
-  # Takes priority over enabled-worlds
   disabled-worlds: []
 
-
-# Movement Freeze Settings
-# Prevents players from moving during respawn countdown
 freeze:
-  # Enable movement freeze during respawn countdown
   enabled: true
-  
-  # Also freeze player rotation (looking around)
   freeze-rotation: false
-  
-  # Message shown when player tries to move during freeze
-  # Leave empty to disable
-  freeze-message: "&c&lIşınlanma sırasında hareket edemezsiniz!"
+  freeze-message: "&c&lTeleport sırasında hareket edemezsiniz!"
+
+database:
+  mysql:
+    host: "localhost"
+    port: 3306
+    database: "multirespawn"
+    username: "root"
+    password: ""
+  redis:
+    host: "localhost"
+    port: 6379
+    password: ""
+
+back-command:
+  enabled: true
