@@ -1,32 +1,29 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+## [1.1.0] - 2026-01-10
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+### Added
+- `/back` command - Cross-server teleport to death location
+- MySQL support for death location persistence
+- Redis support for fast cross-server sync
+- HuskHomes integration for cross-server teleport
+- `server-name` config option
+- `database` config section
+- `back-command` config section
 
-## [1.0.0] - 2025-12-22
+### Changed
+- Version bump to 1.1.0
+- Using Shadow plugin for dependency shading
+
+---
+
+## [1.0.0] - 2025-12-30
 
 ### Added
 - Initial release
-- Cross-server respawn on player death
-- Folia 1.21.8 compatibility with RegionScheduler API
-- BungeeCord/Velocity support for server transfers
-- Modern transfer packet support (1.20.5+)
-- World-specific target server configuration
-- PvP-only death detection
-- Permission-based access control
-- Configurable transfer delay with action bar countdown
-- Separate `messages.yml` for full message customization
-- Turkish language support by default
-- Admin commands: `/foliarespawn reload`, `/foliarespawn info`, `/foliarespawn help`
-- Bypass permission for players who don't want cross-server respawn
-
-### Configuration
-- `config.yml` - Main plugin settings
-- `messages.yml` - All plugin messages (fully customizable)
-
-### Permissions
-- `foliarespawn.admin` - Access to admin commands
-- `foliarespawn.bypass` - Skip cross-server respawn
-- `foliarespawn.transfer` - Required permission for transfer (optional)
+- Folia-compatible respawn command execution
+- Skip respawn screen option
+- Movement freeze during teleport
+- PvP-only death filter
+- World enable/disable lists
+- Console command execution via GlobalRegionScheduler

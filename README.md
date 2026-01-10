@@ -1,8 +1,6 @@
 # MultiRespawn
 
-Cross-server respawn plugin for Folia 1.21.8
-
-Transfer players to another server (e.g., lobby) when they die.
+Cross-server respawn plugin with `/back` command for Folia/Paper
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Folia](https://img.shields.io/badge/Folia-1.21.8-green.svg)](https://papermc.io/software/folia)
@@ -10,119 +8,82 @@ Transfer players to another server (e.g., lobby) when they die.
 
 ## Features
 
-- **Folia Support** - Fully compatible with Folia's RegionScheduler API
-- **Instant Spawn on Death** - Skip respawn screen, /back returns to death location
-- **Console Command Execution** - Bypasses cooldowns and restrictions
-- **Movement Freeze** - Players frozen during teleportation
-- **PvP/PvE Filter** - Option to run only on PvP deaths
-- **Permission System** - Bypass and permission controls
-- **Configurable Messages** - Enable/disable all messages
-- **World Filter** - Enable/disable for specific worlds
+- **Folia Support** - RegionScheduler API compatible
+- **Cross-Server /back** - Return to death location across servers
+- **MySQL + Redis** - Database sync for multi-server setup
+- **HuskHomes Integration** - Uses HuskHomes for cross-server teleport
+- **Instant Spawn** - Skip respawn screen on death
+- **PvP Filter** - Option for PvP-only deaths
 
 ## Installation
 
-1. Download the JAR file from [Releases](https://github.com/altugcetin/MultiRespawn/releases)
-2. Place the JAR in your `plugins` folder
-3. Start the server
-4. Edit `plugins/MultiRespawn/config.yml` as needed
-5. Reload with `/multirespawn reload`
+1. Download JAR from [Releases](https://github.com/altugcetin/MultiRespawn/releases)
+2. Place in `plugins` folder
+3. Configure MySQL and Redis in `config.yml`
+4. Set `server-name` for each server
+5. Reload: `/multirespawn reload`
 
 ## Configuration
 
-### config.yml
-
 ```yaml
-# Plugin Settings
 settings:
   enabled: true
-  debug: false
-  respawn-delay: 60              # Only used if skip-respawn-screen is false
-  skip-respawn-screen: true      # Skip respawn screen for instant spawn
-  spawn-teleport-duration: 100   # Freeze duration after spawn command
+  server-name: "lobby"  # Different for each server
+  skip-respawn-screen: true
 
-# Respawn Command Settings
 respawn:
-  command: "spawn"
-  run-as-console: true           # Bypasses cooldowns
-  console-command: "spawn %player%"
+  run-as-console: true
+  console-command: "huskhomes:spawn %player%"
 
-# Message Settings
-messages:
-  show-death-message: false
-  show-actionbar: false
-  show-bypass-message: false
+database:
+  mysql:
+    host: "localhost"
+    port: 3306
+    database: "multirespawn"
+    username: "root"
+    password: ""
+  redis:
+    host: "localhost"
+    port: 6379
+    password: ""
 
-# Conditions
-conditions:
-  only-pvp-deaths: false
-  require-permission: false
-  permission-node: "multirespawn.use"
-  enabled-worlds: []
-  disabled-worlds: []
-
-# Movement Freeze Settings
-freeze:
+back-command:
   enabled: true
-  freeze-rotation: false
 ```
-
-### messages.yml
-
-All messages are fully customizable in a separate `messages.yml` file.
 
 ## Commands
 
 | Command | Description | Permission |
 |---------|-------------|------------|
-| `/multirespawn reload` | Reload configuration | `multirespawn.admin` |
-| `/multirespawn info` | Show plugin information | `multirespawn.admin` |
-| `/multirespawn help` | Show help menu | `multirespawn.admin` |
+| `/back` | Teleport to death location | `multirespawn.back` |
+| `/multirespawn reload` | Reload config | `multirespawn.admin` |
+| `/multirespawn info` | Plugin info | `multirespawn.admin` |
 
 ## Permissions
 
 | Permission | Description | Default |
 |------------|-------------|---------|
-| `multirespawn.admin` | Access to admin commands | OP |
-| `multirespawn.bypass` | Bypass cross-server respawn | false |
-| `multirespawn.transfer` | Transfer permission (optional) | true |
-
-## Proxy Configuration
-
-### BungeeCord / Waterfall
-
-In `config.yml`:
-```yaml
-servers:
-  survival:
-    address: localhost:25566
-  lobby:
-    address: localhost:25567
-```
-
-### Velocity
-
-In `velocity.toml`:
-```toml
-[servers]
-survival = "localhost:25566"
-lobby = "localhost:25567"
-```
+| `multirespawn.admin` | Admin commands | OP |
+| `multirespawn.bypass` | Bypass respawn | false |
+| `multirespawn.back` | Use /back | true |
 
 ## Requirements
 
 - Folia 1.21.4+ or Paper 1.21+
 - Java 21+
-- BungeeCord/Velocity proxy system
+- MySQL 8.0+
+- Redis
+- HuskHomes (for cross-server teleport)
 
-## Building from Source
+## Building
 
 ```bash
 git clone https://github.com/altugcetin/MultiRespawn.git
 cd MultiRespawn
-./gradlew build
+./gradlew shadowJar
 ```
 
-The JAR will be in `build/libs/`
+JAR: `build/libs/MultiRespawn-x.x.x.jar`
 
 ## Author
 
@@ -130,8 +91,4 @@ The JAR will be in `build/libs/`
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Contributing
-
-Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+MIT License - see [LICENSE](LICENSE)
